@@ -20,8 +20,7 @@ module ThreeDS
     end
 
     post '/charge' do
-      puts "[Charge] Requst Source:"
-      puts request["source"]
+
       source = Stripe::Source.create({
         amount: 200,
         currency: 'sgd',
@@ -29,8 +28,7 @@ module ThreeDS
         three_d_secure: { card: request["source"] },
         redirect: { return_url: DOMAIN + '/redirect' },
       })
-      puts "[Charge] Source Object Returned:"
-      puts source.status
+
       if source.status == "failed"
         redirect to('/')
       else

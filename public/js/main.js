@@ -23,8 +23,6 @@ function stripeResponseHandler(status, response) {
   // Grab the form:
   var $form = $('#payment-form');
 
-  console.dir(response);
-
   if (response.error) { // Problem!
     // Show the errors on the form:
     $form.find('.payment-errors').text(response.error.message);
@@ -51,8 +49,7 @@ function stripePoll(source, client_secret) {
 
     // This handler is called as soon as the source is retrieved and subsequently
     // anytime the source's status (`source.status`) is updated.
-    console.dir(status, source);
-
+    
     if (source.status === "consumed") {
       window.location.replace("/success");
     }
