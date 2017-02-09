@@ -50,8 +50,13 @@ function stripePoll(source, client_secret) {
     // This handler is called as soon as the source is retrieved and subsequently
     // anytime the source's status (`source.status`) is updated.
     
+    // TODO: Remove Debug Print
+    console.log(source);
+
     if (source.status === "consumed") {
       window.location.replace("/success");
+    } else if (source.status === "failed") {
+      window.location.replace("/failure");
     }
   })
 }

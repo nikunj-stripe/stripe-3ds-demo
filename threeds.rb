@@ -48,6 +48,10 @@ module ThreeDS
       erb :success, :locals => { :pk => ENV['STRIPE_PUBLISHABLE_KEY'] }
     end
 
+    get '/failure' do
+      erb :failure, :locals => { :pk => ENV['STRIPE_PUBLISHABLE_KEY'] }
+    end
+
     post '/webhooks' do
       # Retrieve the request's body and parse it as JSON
       event_json = JSON.parse(request.body.read)
