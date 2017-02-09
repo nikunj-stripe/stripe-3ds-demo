@@ -55,3 +55,10 @@ function stripePoll(source, client_secret) {
     }
   })
 }
+
+function autofill(cardNumber) {
+  $('#card-number').val(cardNumber);
+  $('#card-cvc').val(123);
+  $('#card-expiry-month').val(12);
+  $('#card-expiry-year').val(25);
+}
