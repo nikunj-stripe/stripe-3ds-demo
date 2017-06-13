@@ -19,13 +19,17 @@ module ThreeDS
       erb :index, :locals => { :pk => ENV['STRIPE_PUBLISHABLE_KEY'] }
     end
 
-    post '/charge' do
+    post '/charge' do 
+      cus = Stripe::Customer.create(
+        :description => "Customer",
+        :source => request["source"]
+      )
 
       source = Stripe::Source.create({
-        amount: 200,
+        amount: 100,
         currency: 'sgd',
         type: 'three_d_secure',
-        three_d_secure: { card: request["source"] },
+        three_d_secure: { customer: cus.id },
         redirect: { return_url: DOMAIN + '/redirect' },
       })
 
@@ -55,15 +59,19 @@ module ThreeDS
     post '/webhooks' do
       # Retrieve the request's body and parse it as JSON
       event_json = JSON.parse(request.body.read)
+      event_object = event_json["data"]["object"]
 
       # Create a charge if source chargeable
       if event_json["type"] == "source.chargeable" && 
-         event_json["data"]["object"]["status"] == "chargeable"
+         event_object["type"] == "three_d_secure" &&
+         event_object["three_d_secure"]["authenticated"]
+        
         ch1 = Stripe::Charge.create(
-          :amount => event_json["data"]["object"]["amount"],
-          :currency => event_json["data"]["object"]["currency"],
-          :source => event_json["data"]["object"]["id"],
-          :description => "Test Charge"
+          :amount => event_object["amount"],
+          :currency => event_object["currency"],
+          :source => event_object["id"],
+          :customer => event_object["three_d_secure"]["customer"],
+          :description => "Test 3DS Charge"
         )
       end
 
